@@ -1,0 +1,530 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Admin/Admin.Master" AutoEventWireup="true" CodeBehind="TaoPhieuNhap.aspx.cs" Inherits="WebDatDoAnOnline.Admin.TaoPhieuNhap" %>
+<%@ Import Namespace="WebDatDoAnOnline" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <meta charset="utf-8" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <audio id="successSound" src="/Audio/thanhcong.mp3" preload="auto"></audio>
+    <audio id="errorSound" src="/Audio/loi.mp3" preload="auto"></audio>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ff6f61, #ff0000, #ffca28);
+            overflow-x: hidden;
+            margin: 0;
+            position: relative;
+        }
+
+        .book_section {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #ff6f61, #ff0000, #ffca28);
+            box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.6);
+            min-height: calc(100vh - 150px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .heading_container h2 {
+            color: #ffffff;
+            font-size: 3.5rem;
+            text-transform: uppercase;
+            text-shadow: 3px 3px 15px rgba(255, 111, 97, 0.8);
+            animation: glow 2s infinite alternate;
+            margin-bottom: 40px;
+        }
+
+        .sub-title {
+            color: #ff6f61;
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 10px rgba(255, 111, 97, 0.5);
+            animation: glow 2s infinite alternate;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .sub-title::before {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(45deg, #ff0000, #ffca28);
+            border-radius: 2px;
+        }
+
+        .sub-title::after {
+            content: '📦';
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            animation: float 2s infinite ease-in-out;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(255, 0, 0, 0.5);
+            animation: slideInLeft 1.5s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 202, 40, 0.3), transparent);
+            animation: sparkle 5s infinite;
+            pointer-events: none;
+        }
+
+        .form-group label {
+            color: #ff6f61;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .form-control {
+            border: none;
+            border-bottom: 3px solid #ff6f61;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            transition: all 0.4s ease;
+            font-size: 0.9rem;
+            color: #ff0000;
+            border-radius: 10px;
+            width: 100%;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .form-control:focus {
+            border-color: #ffca28;
+            box-shadow: 0 5px 15px rgba(255, 202, 40, 0.5);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        select.form-control {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.9) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24"><path fill="%23ff6f61" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center;
+            padding-right: 30px;
+            text-align: center;
+            text-align-last: center;
+            color: #ff6f61;
+            font-size: 0.9rem;
+            height: 40px;
+        }
+
+        select.form-control option {
+            text-align: center;
+            color: #ff0000;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff0000, #ff6f61);
+            color: #fff;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            text-transform: uppercase;
+            box-shadow: 0 10px 20px rgba(255, 0, 0, 0.6);
+            transition: all 0.4s ease;
+            margin: 0 10px;
+        }
+
+        .btn:hover {
+            transform: scale(1.1) translateY(-5px);
+            background: linear-gradient(45deg, #ffca28, #ff6f61);
+            box-shadow: 0 20px 40px rgba(255, 111, 97, 0.8);
+        }
+
+        .table {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(255, 0, 0, 0.3);
+        }
+
+        .table thead {
+            background: linear-gradient(45deg, #ff6f61, #ff0000);
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .table th, .table td {
+            padding: 15px;
+            text-align: center;
+            vertical-align: middle;
+            border: none;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255, 202, 40, 0.2);
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(255, 111, 97, 0.3);
+        }
+
+        .badge {
+            padding: 8px 15px;
+            font-size: 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .badge:hover {
+            transform: scale(1.1);
+        }
+
+        .badge-success {
+            background: #00ff00;
+            color: #ffffff;
+        }
+
+        .badge-danger {
+            background: #ff0000;
+            color: #ffffff;
+        }
+
+        .badge-primary {
+            background: linear-gradient(45deg, #ff0000, #ff6f61);
+            color: #ffffff;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.5);
+        }
+
+        .badge-primary:hover {
+            background: linear-gradient(45deg, #ffca28, #ff6f61);
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff6f61;
+            text-shadow: 2px 2px 10px rgba(255, 111, 97, 0.5);
+        }
+
+        .custom-swal-popup {
+            background: linear-gradient(135deg, #ff6f61, #ff0000) !important;
+            border-radius: 20px !important;
+            box-shadow: 0 10px 30px rgba(255, 111, 97, 0.8) !important;
+            width: 500px !important;
+        }
+
+        .custom-swal-title {
+            color: #ffffff !important;
+            font-size: 1.8rem !important;
+            text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.5) !important;
+        }
+
+        .custom-swal-text {
+            color: #ffffff !important;
+            font-size: 1.1rem !important;
+        }
+
+        .custom-swal-button {
+            background: #ff0000 !important;
+            color: #ffffff !important;
+            padding: 12px 40px !important;
+            border-radius: 25px !important;
+            font-weight: bold !important;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.6) !important;
+        }
+
+        .custom-swal-button:hover {
+            background: #ff3333 !important;
+            transform: scale(1.1) !important;
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /*@keyframes glow {
+            0% {
+                text-shadow: 0 0 10px #ff6f61;
+            }
+            100% {
+                text-shadow: 0 0 20px #ffca28, 0 0 30px #ff0000;
+            }
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(-50%) translateX(0);
+            }
+            50% {
+                transform: translateY(-50%) translateX(10px);
+            }
+        }*/
+    </style>
+
+    <script>
+        window.onload = function () {
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": { "value": 200, "density": { "enable": true, "value_area": 800 } },
+                    "color": { "value": ["#ff6f61", "#ff0000", "#ffca28"] },
+                    "shape": { "type": "star" },
+                    "opacity": { "value": 0.8, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1 } },
+                    "size": { "value": 3, "random": true, "anim": { "enable": true, "speed": 3, "size_min": 0.5 } },
+                    "move": { "enable": true, "speed": 2, "direction": "none", "random": true, "out_mode": "out" }
+                },
+                "interactivity": {
+                    "events": { "onhover": { "enable": true, "mode": "repulse" }, "onclick": { "enable": true, "mode": "push" } },
+                    "modes": { "repulse": { "distance": 100 }, "push": { "particles_nb": 10 } }
+                },
+                "retina_detect": true
+            });
+
+            var seconds = 5;
+            setTimeout(function () {
+                document.getElementById("<%= lblMsg.ClientID %>").style.display = "none";
+            }, seconds * 1000);
+
+            document.getElementById("<%= txtSearch.ClientID %>").addEventListener("input", function () {
+                __doPostBack("<%= txtSearch.UniqueID %>", "");
+            });
+        };
+
+        function showSuccessAlert(message) {
+            Swal.fire({
+                title: 'Thành công!',
+                html: message,
+                icon: 'success',
+                customClass: {
+                    popup: 'custom-swal-popup',
+                    title: 'custom-swal-title',
+                    htmlContainer: 'custom-swal-text',
+                    confirmButton: 'custom-swal-button'
+                },
+                backdrop: `rgba(0, 0, 0, 0.7) url('https://sweetalert2.github.io/images/nyan-cat.gif') left top no-repeat`,
+                didOpen: () => {
+                    document.getElementById('successSound').play();
+                    confetti({
+                        particleCount: 200,
+                        spread: 120,
+                        colors: ['#ff6f61', '#ff0000', '#ffca28', '#ffffff'],
+                        origin: { y: 0.6 }
+                    });
+                }
+            });
+        }
+
+        function showErrorAlert(message) {
+            Swal.fire({
+                title: 'Lỗi!',
+                html: message,
+                icon: 'error',
+                customClass: {
+                    popup: 'custom-swal-popup',
+                    title: 'custom-swal-title',
+                    htmlContainer: 'custom-swal-text',
+                    confirmButton: 'custom-swal-button'
+                },
+                backdrop: `rgba(0, 0, 0, 0.7) url('https://sweetalert2.github.io/images/nyan-cat.gif') left top no-repeat`,
+                didOpen: () => {
+                    document.getElementById('errorSound').play();
+                }
+            });
+        }
+    </script>
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <section class="book_section layout_padding">
+        <div class="container position-relative">
+            <div id="particles-js" class="particles"></div>
+
+            <div class="heading_container text-center">
+                <h2>Tạo Phiếu Nhập</h2>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="align-align-self-end text-center mb-4">
+                                <asp:Label ID="lblMsg" runat="server" Visible="false" CssClass="alert"></asp:Label>
+                            </div>
+
+                            <div class="row">
+                                <!-- Left Panel: Ingredient Selection -->
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <h4 class="sub-title">Chọn Nguyên Liệu</h4>
+                                    <div class="form-group mb-3">
+                                        <asp:TextBox ID="txtSearch" runat="server" CssClass="form-control" placeholder="Tìm kiếm nguyên liệu" AutoPostBack="true" OnTextChanged="txtSearch_TextChanged"></asp:TextBox>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <asp:Repeater ID="rIngredients" runat="server" OnItemCommand="rIngredients_ItemCommand">
+                                            <HeaderTemplate>
+                                                <table class="table data-table-export table-hover nowrap">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Mã Nguyên Liệu</th>
+                                                            <th>Tên Nguyên Liệu</th>
+                                                            <th>Đơn Vị Tính</th>
+                                                            <th>Số Lượng Tồn</th>
+                                                            <th>Thao Tác</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                            </HeaderTemplate>
+                                            <ItemTemplate>
+                                                <tr>
+                                                    <td><%# Eval("MaNguyenLieu") %></td>
+                                                    <td><%# Eval("TenNguyenLieu") %></td>
+                                                    <td><%# Eval("DonViTinh") %></td>
+                                                    <td><%# Eval("SoLuongTon") %></td>
+                                                    <td>
+                                                        <asp:LinkButton ID="lnkAdd" Text="Thêm" runat="server" CssClass="badge badge-primary" CommandArgument='<%# Eval("MaNguyenLieu") %>' CommandName="add">
+                                                            <i class="ti-plus"></i>
+                                                        </asp:LinkButton>
+                                                    </td>
+                                                </tr>
+                                            </ItemTemplate>
+                                            <FooterTemplate>
+                                                </tbody>
+                                                </table>
+                                            </FooterTemplate>
+                                        </asp:Repeater>
+                                    </div>
+                                    <div class="form-group mt-3">
+                                        <label>Số Lượng Nhập</label>
+                                        <asp:TextBox ID="txtQuantity" runat="server" CssClass="form-control" placeholder="Nhập số lượng" Text="1"></asp:TextBox>
+                                        <asp:RequiredFieldValidator ID="rfvQuantity" runat="server" ErrorMessage="Bắt buộc nhập số lượng" ForeColor="Red" Display="Dynamic" ControlToValidate="txtQuantity" ValidationGroup="AddIngredient"></asp:RequiredFieldValidator>
+                                        <asp:RegularExpressionValidator ID="revQuantity" runat="server" ErrorMessage="Số lượng phải là số nguyên dương!" ForeColor="Red" Display="Dynamic" ControlToValidate="txtQuantity" ValidationExpression="^[1-9]\d*$" ValidationGroup="AddIngredient"></asp:RegularExpressionValidator>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Đơn Giá (VND)</label>
+                                        <asp:TextBox ID="txtUnitPrice" runat="server" CssClass="form-control" placeholder="Nhập đơn giá"></asp:TextBox>
+                                        <asp:RequiredFieldValidator ID="rfvUnitPrice" runat="server" ErrorMessage="Bắt buộc nhập đơn giá" ForeColor="Red" Display="Dynamic" ControlToValidate="txtUnitPrice" ValidationGroup="AddIngredient"></asp:RequiredFieldValidator>
+                                        <asp:RegularExpressionValidator ID="revUnitPrice" runat="server" ErrorMessage="Đơn giá phải là số hợp lệ!" ForeColor="Red" Display="Dynamic" ControlToValidate="txtUnitPrice" ValidationExpression="^\d+(\.\d{1,2})?$" ValidationGroup="AddIngredient"></asp:RegularExpressionValidator>
+                                    </div>
+                                </div>
+
+                                <!-- Right Panel: Purchase Order Details -->
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <h4 class="sub-title">Chi Tiết Phiếu Nhập</h4>
+                                    <div class="form-group">
+                                        <label>Mã Phiếu Nhập</label>
+                                        <asp:TextBox ID="txtMaPhieu" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nhà Cung Cấp</label>
+                                        <asp:DropDownList ID="ddlNhaCungCap" runat="server" CssClass="form-control" DataSourceID="SqlDataSourceNhaCungCap" DataTextField="TenNhaCungCap" DataValueField="MaNhaCungCap" AppendDataBoundItems="true">
+                                            <asp:ListItem Value="0">Chọn nhà cung cấp</asp:ListItem>
+                                        </asp:DropDownList>
+                                        <asp:RequiredFieldValidator ID="rfvNhaCungCap" runat="server" ErrorMessage="Bắt buộc chọn nhà cung cấp!" ForeColor="Red" Display="Dynamic" ControlToValidate="ddlNhaCungCap" InitialValue="0" ValidationGroup="CreatePurchase"></asp:RequiredFieldValidator>
+                                        <asp:SqlDataSource ID="SqlDataSourceNhaCungCap" runat="server" ConnectionString="Data Source=.\SQLEXPRESS;Initial Catalog=WebsiteDatDoAnOnline;Integrated Security=True;MultipleActiveResultSets=True" ProviderName="System.Data.SqlClient" SelectCommand="SELECT MaNhaCungCap, TenNhaCungCap FROM NhaCungCap"></asp:SqlDataSource>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Người Tạo Phiếu</label>
+                                        <asp:TextBox ID="txtNguoiTao" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <asp:Repeater ID="rPurchaseDetails" runat="server" OnItemCommand="rPurchaseDetails_ItemCommand">
+                                            <HeaderTemplate>
+                                                <table class="table data-table-export table-hover nowrap">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>STT</th>
+                                                            <th>Mã Nguyên Liệu</th>
+                                                            <th>Tên Nguyên Liệu</th>
+                                                            <th>Đơn Vị Tính</th>
+                                                            <th>Số Lượng</th>
+                                                            <th>Đơn Giá</th>
+                                                            <th>Thành Tiền</th>
+                                                            <th>Thao Tác</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                            </HeaderTemplate>
+                                            <ItemTemplate>
+                                                <tr>
+                                                    <td><%# Container.ItemIndex + 1 %></td>
+                                                    <td><%# Eval("MaNguyenLieu") %></td>
+                                                    <td><%# Eval("TenNguyenLieu") %></td>
+                                                    <td><%# Eval("DonViTinh") %></td>
+                                                    <td><%# Eval("SoLuong") %></td>
+                                                    <td><%# String.Format("{0:N0}", Eval("DonGia")) %></td>
+                                                    <td><%# String.Format("{0:N0}", Convert.ToDouble(Eval("SoLuong")) * Convert.ToDouble(Eval("DonGia"))) %></td>
+                                                    <td>
+                                                        <asp:LinkButton ID="lnkEdit" Text="Sửa SL" runat="server" CssClass="badge badge-primary" CommandArgument='<%# Eval("MaNguyenLieu") %>' CommandName="edit">
+                                                            <i class="ti-pencil"></i>
+                                                        </asp:LinkButton>
+                                                        <asp:LinkButton ID="lnkDelete" Text="Xóa" runat="server" CssClass="badge badge-danger" CommandArgument='<%# Eval("MaNguyenLieu") %>' CommandName="delete" OnClientClick="return confirm('Bạn có muốn xóa nguyên liệu này khỏi phiếu nhập?');">
+                                                            <i class="ti-trash"></i>
+                                                        </asp:LinkButton>
+                                                    </td>
+                                                </tr>
+                                            </ItemTemplate>
+                                            <FooterTemplate>
+                                                </tbody>
+                                                </table>
+                                            </FooterTemplate>
+                                        </asp:Repeater>
+                                    </div>
+                                    <div class="form-group mt-3">
+                                        <label class="total-amount">Tổng Tiền: <asp:Label ID="lblTongTien" runat="server" Text="0"></asp:Label> VND</label>
+                                    </div>
+                                    <div class="text-center mt-4">
+                                        <asp:Button ID="btnNhapHang" runat="server" Text="Nhập Hàng" CssClass="btn btn-primary" OnClick="btnNhapHang_Click" ValidationGroup="CreatePurchase" />
+                                        <asp:Button ID="btnClear" runat="server" Text="Làm Mới" CssClass="btn btn-primary" CausesValidation="false" OnClick="btnClear_Click" />
+                                        <asp:Button ID="btnExportPDF" runat="server" Text="Xuất PDF" CssClass="btn btn-primary" OnClick="btnExportPDF_Click" Visible="false" CausesValidation="false" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</asp:Content>

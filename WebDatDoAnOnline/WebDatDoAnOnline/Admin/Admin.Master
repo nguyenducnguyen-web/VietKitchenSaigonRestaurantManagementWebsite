@@ -1,0 +1,707 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Admin.master.cs" Inherits="WebDatDoAnOnline.Admin.Admin" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <title>Nhà hàng Viet Kitchen Sài Gòn</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="VietKitchen Admin Dashboard - Ultimate Food Management">
+    <meta name="keywords" content="Admin, Dashboard, VietKitchen, Food Management, Ultimate">
+    <meta name="author" content="VietKitchen Team">
+
+    <!-- Fonts and Icons -->
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Audio -->
+    <audio id="successSound" src="/Audio/chienthang.mp3" preload="auto"></audio>
+    <audio id="errorSound" src="/Audio/loi.mp3" preload="auto"></audio>
+
+    <!-- Required Framework -->
+    <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../assets/icon/themify-icons/themify-icons.css">
+    <link rel="stylesheet" type="text/css" href="../assets/icon/icofont/css/icofont.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/jquery.mCustomScrollbar.css">
+    <link rel="stylesheet" type="text/css" href="../assets/datatables/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="../assets/datatables/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="../assets/datatables/css/icon-font.min.css">
+
+    <style>
+        :root {
+            --primary-color: #ff6f61;
+            --secondary-color: #ffca28;
+            --accent-color: #ff0000;
+            --bg-dark: #1a202c;
+            --bg-light: #ffffff;
+            --text-dark: #2d3748;
+            --text-light: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --bg-main: var(--bg-dark);
+            --text-main: var(--text-light);
+            --card-bg: #2d3748;
+        }
+
+        [data-theme="light"] {
+            --bg-main: var(--bg-light);
+            --text-main: var(--text-dark);
+            --card-bg: #f7fafc;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        /* Header */
+        .pcoded-header {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 0.75rem 1.5rem;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar-logo img {
+            width: 100px;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .user-profile img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--secondary-color);
+            transition: transform 0.3s ease;
+        }
+
+        .user-profile img:hover {
+            transform: scale(1.1);
+        }
+
+        .user-profile span {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .profile-notification {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            padding: 0.5rem;
+            min-width: 200px;
+        }
+
+        .profile-notification li a {
+            color: var(--text-main);
+            padding: 0.75rem 1rem;
+            display: block;
+            transition: background 0.2s ease;
+        }
+
+        .profile-notification li a:hover {
+            background: var(--primary-color);
+            color: var(--text-light);
+            border-radius: 8px;
+        }
+
+        /* Sidebar */
+        .pcoded-navbar {
+            background: var(--card-bg);
+            width: 280px;
+            position: fixed;
+            top: 64px;
+            bottom: 0;
+            transition: transform 0.3s ease;
+            z-index: 999;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .pcoded-navigatio-lavel {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 1.5rem 1rem;
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+
+        .pcoded-navigatio-lavel::after {
+            content: '';
+            position: absolute;
+            bottom: 0.5rem;
+            left: 1rem;
+            width: 30px;
+            height: 1px;
+            background: var(--secondary-color);
+            opacity: 0.7;
+            transition: width 0.3s ease, opacity 0.3s ease;
+        }
+
+        .pcoded-navigatio-lavel:hover::after {
+            width: 50px;
+            opacity: 1;
+        }
+
+        .pcoded-item li a {
+            color: var(--text-main);
+            font-size: 0.95rem;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            border-radius: 8px;
+            margin: 0.25rem 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .pcoded-item li a:hover,
+        .pcoded-item li.active a {
+            background: var(--primary-color);
+            color: var(--text-light);
+            transform: translateX(5px);
+        }
+
+        .pcoded-micon i {
+            color: var(--secondary-color);
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .pcoded-main-container {
+            margin-left: 280px;
+            padding: 84px 1.5rem 1.5rem;
+            min-height: 100vh;
+        }
+
+        .pcoded-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Breadcrumb */
+        .danger-breadcrumb {
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .breadcrumb-title li a {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb-title li a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Loader */
+        .theme-loader {
+            background: rgba(0, 0, 0, 0.8);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ball-scale .contain .ring .frame {
+            background: var(--secondary-color);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* SweetAlert2 */
+        .custom-swal-popup {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color)) !important;
+            border-radius: 16px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .custom-swal-title,
+        .custom-swal-text {
+            color: var(--text-light) !important;
+        }
+
+        .custom-swal-button {
+            background: var(--accent-color) !important;
+            color: var(--text-light) !important;
+            border-radius: 12px !important;
+            padding: 0.75rem 2rem !important;
+        }
+
+        .custom-swal-button:hover {
+            background: #ff3333 !important;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 1024px) {
+            .pcoded-navbar {
+                transform: translateX(-100%);
+            }
+
+            .pcoded-navbar.active {
+                transform: translateX(0);
+            }
+
+            .pcoded-main-container {
+                margin-left: 0;
+            }
+        }
+    </style>
+
+    <script type="text/javascript" src="../assets/js/jquery/jquery.min.js"></script>
+    <script>
+        $(function () {
+            // Theme Toggle
+            const themeToggle = $('<button class="text-white p-2 rounded-full hover:bg-opacity-20 hover:bg-white"><i class="fas fa-moon"></i></button>');
+            $('.nav-right').prepend(themeToggle);
+            themeToggle.click(() => {
+                const currentTheme = $('html').attr('data-theme') === 'dark' ? 'light' : 'dark';
+                $('html').attr('data-theme', currentTheme);
+                themeToggle.find('i').toggleClass('fa-moon fa-sun');
+            });
+
+            // Active Menu Highlight
+            var url = window.location.href;
+            $("#navbarSupportedContent a").each(function () {
+                if (url == this.href) {
+                    $(this).closest("li").addClass("active");
+                }
+            });
+
+            // Particles.js
+            particlesJS("particles-js", {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: ["#ff6f61", "#ffca28", "#ff0000"] },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.5, random: true },
+                    size: { value: 3, random: true },
+                    move: { enable: true, speed: 1, direction: "none", random: true, out_mode: "out" }
+                },
+                interactivity: {
+                    events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } },
+                    modes: { repulse: { distance: 100 }, push: { particles_nb: 5 } }
+                },
+                retina_detect: true
+            });
+
+            // Mobile Menu Toggle
+            $('.mobile-menu').click(function () {
+                $('.pcoded-navbar').toggleClass('active');
+            });
+
+            // Fullscreen Toggle
+            window.toggleFullScreen = function () {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    }
+                }
+            };
+        });
+
+        function showSuccessAlert(message) {
+            Swal.fire({
+                title: 'Thành công!',
+                html: message,
+                icon: 'success',
+                customClass: {
+                    popup: 'custom-swal-popup',
+                    title: 'custom-swal-title',
+                    htmlContainer: 'custom-swal-text',
+                    confirmButton: 'custom-swal-button'
+                },
+                backdrop: `rgba(0, 0, 0, 0.7)`,
+                didOpen: () => {
+                    document.getElementById('successSound').play();
+                    confetti({
+                        particleCount: 150,
+                        spread: 100,
+                        colors: ['#ff6f61', '#ff0000', '#ffca28'],
+                        origin: { y: 0.6 }
+                    });
+                }
+            });
+        }
+
+        function showErrorAlert(message) {
+            Swal.fire({
+                title: 'Lỗi!',
+                html: message,
+                icon: 'error',
+                customClass: {
+                    popup: 'custom-swal-popup',
+                    title: 'custom-swal-title',
+                    htmlContainer: 'custom-swal-text',
+                    confirmButton: 'custom-swal-button'
+                },
+                backdrop: `rgba(0, 0, 0, 0.7)`,
+                didOpen: () => {
+                    document.getElementById('errorSound').play();
+                }
+            });
+        }
+    </script>
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <!-- Loader -->
+        <div class="theme-loader">
+            <div class="ball-scale">
+                <div class='contain'>
+                    <div class="ring"><div class="frame"></div></div>
+                    <div class="ring"><div class="frame"></div></div>
+                    <div class="ring"><div class="frame"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Structure -->
+        <div id="pcoded" class="pcoded">
+            <div id="particles-js"></div>
+            <div class="pcoded-overlay-box"></div>
+            <div class="pcoded-container navbar-wrapper">
+                <!-- Header -->
+                <nav class="navbar header-navbar pcoded-header">
+                    <div class="navbar-wrapper container-fluid flex items-center justify-between">
+                        <div class="navbar-logo flex items-center">
+                            <a class="mobile-menu" id="mobile-collapse" href="#!">
+                                <i class="fas fa-bars text-xl"></i>
+                            </a>
+                            <a href="BangDieuKhien.aspx" class="ml-3">
+                                <img class="img-fluid" src="../Images/logovietkitchensg.png" alt="VietKitchen Logo" />
+                            </a>
+                        </div>
+                        <div class="navbar-container">
+                            <ul class="nav-left flex items-center">
+                                <li>
+                                    <a href="#!" onclick="toggleFullScreen()" class="text-white hover:text-yellow-300">
+                                        <i class="fas fa-expand"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="nav-right flex items-center space-x-4">
+                                <li class="user-profile header-notification relative">
+                                    <a href="#!" class="flex items-center space-x-2">
+                                        <img src="../Images/adminpic.png" class="img-radius" alt="Profile">
+                                        <span><% Response.Write(Session["admin"]); %></span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </a>
+                                    <ul class="show-notification profile-notification absolute right-0 top-full hidden">
+                                        <li>
+                                            <asp:LinkButton ID="lbLogout" runat="server" CausesValidation="false" OnClick="lbLogout_Click">
+                                                <i class="fas fa-sign-out-alt mr-2"></i> Đăng xuất
+                                            </asp:LinkButton>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Main Content -->
+                <div class="pcoded-main-container">
+                    <div class="pcoded-wrapper">
+                        <!-- Sidebar -->
+                        <nav class="pcoded-navbar">
+                            <div class="sidebar_toggle"><a href="#"><i class="fas fa-times"></i></a></div>
+                            <div class="pcoded-inner-navbar main-menu" id="navbarSupportedContent">
+                                <div class="pcoded-navigatio-lavel">Tổng quan</div>
+                                <ul class="pcoded-item pcoded-left-item">
+                                    <li>
+                                        <a href="BangDieuKhien.aspx">
+                                            <span class="pcoded-micon"><i class="fas fa-home"></i></span>
+                                            <span class="pcoded-mtext">Bảng điều khiển</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <asp:Panel ID="pnlQuanLyThongTinNoiBo" runat="server" Visible='<%# Session["Quyen"] != null && Session["Quyen"].ToString() == "Admin" %>'>
+                                    <div class="pcoded-navigatio-lavel">Quản lý thông tin nội bộ</div>
+                                    <ul class="pcoded-item pcoded-left-item">
+                                        <li>
+                                            <a href="QuanLyNhaCungCap.aspx">
+                                                <span class="pcoded-micon"><i class="fas fa-truck"></i></span>
+                                                <span class="pcoded-mtext">Nhà cung cấp</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="QuanLyNhanVien.aspx">
+                                                <span class="pcoded-micon"><i class="fas fa-users"></i></span>
+                                                <span class="pcoded-mtext">Nhân viên</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="QuanLyTaiKhoanNguoiDung.aspx">
+                                                <span class="pcoded-micon"><i class="fas fa-user-circle"></i></span>
+                                                <span class="pcoded-mtext">Người dùng</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </asp:Panel>
+
+                                <asp:Panel ID="pnlQuanLyKhoNguyenLieu" runat="server" Visible='<%# Session["Quyen"] != null && (Session["Quyen"].ToString() == "Admin" || Session["Quyen"].ToString() == "Nhân viên kho") %>'>
+                                    <div class="pcoded-navigatio-lavel">Quản lý kho nguyên liệu</div>
+                                    <ul class="pcoded-item pcoded-left-item">
+                                       
+                                        <li>
+                                            <a href="QuanLyNguyenLieu.aspx">
+                                                <span class="pcoded-micon"><i class="fas fa-box"></i></span>
+                                                <span class="pcoded-mtext">Nguyên liệu</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="TaoPhieuNhap.aspx">
+                                                <span class="pcoded-micon"><i class="fas fa-file-import"></i></span>
+                                                <span class="pcoded-mtext">Tạo phiếu nhập</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="QuanLyPhieuNhapHang.aspx">
+                                                <span class="pcoded-micon"><i class="fas fa-clipboard-list"></i></span>
+                                                <span class="pcoded-mtext">Quản lý nhập nguyên liệu</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="TaoPhieuXuat.aspx">
+                                                <span class="pcoded-micon"><i class="fas fa-file-export"></i></span>
+                                                <span class="pcoded-mtext">Tạo phiếu xuất</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="QuanLyPhieuXuatHang.aspx">
+                                                <span class="pcoded-micon"><i class="fas fa-clipboard-check"></i></span>
+                                                <span class="pcoded-mtext">Quản lý xuất nguyên liệu</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </asp:Panel>
+
+                                <asp:Panel ID="pnlQuanLyThongTinMonAn" runat="server" Visible='<%# Session["Quyen"] != null && Session["Quyen"].ToString() == "Admin" %>'>
+                                    <div class="pcoded-navigatio-lavel">Quản lý thông tin món ăn</div>
+                                    <ul class="pcoded-item pcoded-left-item">
+                                        <li>
+                                            <a href="QuanLyLoaiMonAn.aspx">
+                                                <span class="pcoded-micon"><i class="fas fa-utensils"></i></span>
+                                                <span class="pcoded-mtext">Loại món ăn</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="QuanLyMonAn.aspx">
+                                                <span class="pcoded-micon"><i class="fas fa-hamburger"></i></span>
+                                                <span class="pcoded-mtext">Món ăn</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </asp:Panel>
+
+                                <asp:Panel ID="pnlQuanLyDonHang" runat="server" Visible='<%# Session["Quyen"] != null && (Session["Quyen"].ToString() == "Admin" || Session["Quyen"].ToString() == "Nhân viên bán hàng") %>'>
+                                    <div class="pcoded-navigatio-lavel">Quản lý đơn hàng</div>
+                                    <ul class="pcoded-item pcoded-left-item">
+                                        <li>
+                                            <a href="QuanLyTrangThaiDonHang.aspx">
+                                                <span class="pcoded-micon"><i class="fas fa-shopping-cart"></i></span>
+                                                <span class="pcoded-mtext">Cập nhật trạng thái đơn hàng</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </asp:Panel>
+
+                                <asp:Panel ID="pnlQuanLyDatBanVaLienHe" runat="server" Visible='<%# Session["Quyen"] != null && (Session["Quyen"].ToString() == "Admin" || Session["Quyen"].ToString() == "Nhân viên bán hàng") %>'>
+                                    <div class="pcoded-navigatio-lavel">Quản lý đặt bàn và liên hệ</div>
+                                    <ul class="pcoded-item pcoded-left-item">
+                                        <li>
+                                            <a href="QuanLyDatBan.aspx">
+                                                <span class="pcoded-micon"><i class="fas fa-chair"></i></span>
+                                                <span class="pcoded-mtext">Đặt bàn</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="QuanLyLienHeNguoiDung.aspx">
+                                                <span class="pcoded-micon"><i class="fas fa-envelope"></i></span>
+                                                <span class="pcoded-mtext">Liên hệ</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </asp:Panel>
+
+                                <asp:Panel ID="pnlBaoCao" runat="server" Visible='<%# Session["Quyen"] != null && Session["Quyen"].ToString() == "Admin" %>'>
+                                    <div class="pcoded-navigatio-lavel">Báo Cáo - Thống Kê</div>
+                                    <ul class="pcoded-item pcoded-left-item">
+                                        
+
+                                        <li>
+                                            <a href="QuanLyBaoCao.aspx">
+                                                <span class="pcoded-micon"><i class="fas fa-chart-bar"></i></span>
+                                                <span class="pcoded-mtext">Báo cáo tổng hợp</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="BaoCaoBanHang.aspx">
+                                                <span class="pcoded-micon"><i class="fas fa-chart-line"></i></span>
+                                                <span class="pcoded-mtext">Báo cáo bán hàng</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </asp:Panel>
+
+
+                                <asp:Panel ID="Panel1" runat="server" Visible='<%# Session["Quyen"] != null && (Session["Quyen"].ToString() == "Admin" || Session["Quyen"].ToString() == "Nhân viên bán hàng" || Session["Quyen"].ToString() == "Nhân viên kho") %>'>
+                                    <div class="pcoded-navigatio-lavel">Quản lý thông tin tài khoản</div>
+                                    <ul class="pcoded-item pcoded-left-item">
+                                        <li>
+                                            <a href="~/Admin/TrangThongTinTaiKhoan.aspx" runat="server">
+                                                <span class="pcoded-micon"><i class="fas fa-user-circle"></i></span>
+                                                <span class="pcoded-mtext">Thông tin tài khoản</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </asp:Panel>
+
+                            </div>
+                        </nav>
+
+                        <!-- Content -->
+                        <div class="pcoded-content">
+                            <div class="card borderless-card">
+                                <div class="card-block danger-breadcrumb">
+                                    <div class="page-header-breadcrumb">
+                                        <ul class="breadcrumb-title flex items-center space-x-2">
+                                            <li class="breadcrumb-item">
+                                                <a href="BangDieuKhien.aspx">
+                                                    <i class="icofont icofont-home"></i>
+                                                </a>
+                                            </li>
+                                            <li class="breadcrumb-item"><a href="BangDieuKhien.aspx">Bảng điều khiển</a></li>
+                                            <li class="breadcrumb-item"><a href="#"><% Response.Write(Session["breadCrum"]); %></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                            </asp:ContentPlaceHolder>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Required Scripts -->
+    <script type="text/javascript" src="../assets/js/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../assets/js/popper.js/popper.min.js"></script>
+    <script type="text/javascript" src="../assets/js/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../assets/js/jquery-slimscroll/jquery.slimscroll.js"></script>
+    <script type="text/javascript" src="../assets/js/modernizr/modernizr.js"></script>
+    <script src="../assets/pages/widget/amchart/amcharts.min.js"></script>
+    <script src="../assets/pages/widget/amchart/serial.min.js"></script>
+    <script type="text/javascript" src="../assets/pages/todo/todo.js"></script>
+    <script type="text/javascript" src="../assets/pages/dashboard/custom-dashboard.js"></script>
+    <script type="text/javascript" src="../assets/js/script.js"></script>
+    <script type="text/javascript" src="../assets/js/SmoothScroll.js"></script>
+    <script src="../assets/js/pcoded.min.js"></script>
+    <script src="../assets/js/demo-12.js"></script>
+    <script src="../assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script>
+        var $window = $(window);
+        var nav = $('.fixed-button');
+        $window.scroll(function () {
+            if ($window.scrollTop() >= 200) {
+                nav.addClass('active');
+            } else {
+                nav.removeClass('active');
+            }
+        });
+
+        // Toggle profile dropdown
+        $('.user-profile').click(function (e) {
+            e.stopPropagation();
+            $('.profile-notification').toggleClass('hidden');
+        });
+
+        $(document).click(function (e) {
+            if (!$(e.target).closest('.user-profile').length) {
+                $('.profile-notification').addClass('hidden');
+            }
+        });
+    </script>
+    <script src="../assets/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="../assets/datatables/js/dataTables.responsive.min.js"></script>
+    <script src="../assets/datatables/js/responsive.bootstrap4.min.js"></script>
+    <script src="../assets/datatables/js/dataTables.buttons.min.js"></script>
+    <script src="../assets/datatables/js/buttons.bootstrap4.min.js"></script>
+    <script src="../assets/datatables/js/buttons.print.min.js"></script>
+    <script src="../assets/datatables/js/buttons.html5.min.js"></script>
+    <script src="../assets/datatables/js/buttons.flash.min.js"></script>
+    <script src="../assets/datatables/js/pdfmake.min.js"></script>
+    <script src="../assets/datatables/js/vfs_fonts.js"></script>
+    <script src="../assets/datatables/js/datatable-setting.js"></script>
+</body>
+</html>

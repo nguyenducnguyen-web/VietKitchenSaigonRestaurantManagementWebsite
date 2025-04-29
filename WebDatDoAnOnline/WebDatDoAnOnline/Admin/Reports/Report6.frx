@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="C#" ReportInfo.Name="Report">
+	<DataBand Name="Data1" Top="100" Width="720" Height="50">
+		<TextObject Name="Text1" Left="0" Top="0" Width="720" Height="20" Text="[Title]" Font="Arial, 14pt, style=Bold" />
+		<TextObject Name="Text2" Left="0" Top="30" Width="720" Height="20" Text="[DataField]" />
+	</DataBand>
+</Report>
