@@ -11,18 +11,24 @@ Restaurant management website for Viet Kitchen Saigon, developed in C# using Vis
 ## Brief description
 
 - Designed and developed a comprehensive restaurant management website for Viet Kitchen Saigon, enabling seamless user and admin interactions for food ordering, inventory management and business analytics. The platform integrates robust authentication, user-friendly features and administrative tools to streamline restaurant operations and enhance customer experience.
-- Project link (GitHub): [MrBeanMobileApp](https://github.com/phamgiaphuc/MrBeanMobileApp)
+- Project link (GitHub): [VietKitchenSaigonRestaurantManagementWebsite](https://github.com/nguyenducnguyen-web/VietKitchenSaigonRestaurantManagementWebsite)
 - Project's author: Nguyen Duc Nguyen
 
 ## Language and Tools
 
-![Flutter Badge](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=fff&style=flat)
-![Expo Badge](https://img.shields.io/badge/Expo-000020?logo=expo&logoColor=fff&style=flat)
-![Google Gemini Badge](https://img.shields.io/badge/Google%20Gemini-8E75B2?logo=googlegemini&logoColor=fff&style=flat)
+![C# Badge](https://img.shields.io/badge/C%23-239120?logo=c-sharp&logoColor=fff&style=flat)
+![Visual Studio 2022 Badge](https://img.shields.io/badge/Visual%20Studio%202022-5C2D91?logo=visualstudio&logoColor=fff&style=flat)
+![ASP.NET Web Forms Badge](https://img.shields.io/badge/ASP.NET%20Web%20Forms-512BD4?logo=dotnet&logoColor=fff&style=flat)
+![SQL Server Badge](https://img.shields.io/badge/SQL%20Server-CC2927?logo=microsoftsqlserver&logoColor=fff&style=flat)
+![CSS3 Badge](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=fff&style=flat)
+![JavaScript Badge](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=000&style=flat)
+![Bootstrap 4 Badge](https://img.shields.io/badge/Bootstrap%204-7952B3?logo=bootstrap&logoColor=fff&style=flat)
+![Tailwind CSS Badge](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?logo=tailwindcss&logoColor=fff&style=flat)
+![jQuery Badge](https://img.shields.io/badge/jQuery-0769AD?logo=jquery&logoColor=fff&style=flat)
 
 ## Project details
 
-- [Link](https://drive.google.com/file/d/1pydX9a5Je3cw0VLgvkw5Xsoj8bnUZgGf/view?usp=sharing)
+- [Link](https://drive.google.com/file/d/1NAtWFiTNNLdmnb0b4kFK-uGRCI_lJxFs/view?usp=sharing)
 
 
 
