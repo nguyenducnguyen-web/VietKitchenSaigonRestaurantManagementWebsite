@@ -28,7 +28,7 @@ Restaurant management website for Viet Kitchen Saigon, developed in C# using Vis
 
 ## Project details
 
-- [Link](https://drive.google.com/file/d/1NAtWFiTNNLdmnb0b4kFK-uGRCI_lJxFs/view?usp=sharing)
+- [Link](https://docs.google.com/document/d/1uPrf4h1WJF3LIys45yiahokefhMTMDni/edit?usp=sharing&ouid=110380848989676522612&rtpof=true&sd=true)
 
 
 
